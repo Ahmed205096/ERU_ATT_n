@@ -822,13 +822,13 @@ export default function AdminCourseProjectsPage({ params }: { params: Promise<{ 
                                     
                                     <button 
                                         onClick={() => {
-                                            const url = `${window.location.origin}/projects/${courseId}/assistant/login?u=${admin.username}&p=${admin.password}`;
+                                            const url = `${window.location.origin}/projects/${courseId}/assistant/login`;
                                             navigator.clipboard.writeText(url);
-                                            showToast("Direct access link copied!", "success");
+                                            showToast("Login page link copied!", "success");
                                         }}
                                         className="w-full mt-6 py-3 bg-orange-600/10 text-orange-500 hover:bg-orange-600 hover:text-white rounded-xl border border-orange-500/20 transition-all font-bold text-[10px] uppercase tracking-widest flex items-center justify-center gap-2"
                                     >
-                                        <span>🔗</span> Copy Direct Link
+                                        <span>🔗</span> Copy Login Link
                                     </button>
                                 </div>
                             ))}
