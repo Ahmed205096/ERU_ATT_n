@@ -180,19 +180,33 @@ export async function createTeam(
 }
 
 export async function getTeamsForCourse(courseId?: string) {
-    await dbConnect();
-    
-    const query = courseId ? { courseId } : {};
-    
-    // We populate the Idea to easily display titles
-    const teams = await Team.find(query)
-        .populate("courseId")
-        .populate("ideaId")
-        .sort({ createdAt: -1 })
-        .lean();
+    try {
+        await dbConnect();
         
-    // Convert to plain JSON and resolve references safely
-    return JSON.parse(JSON.stringify(teams));
+        const query = courseId ? { courseId } : {};
+        
+        // Use field selection to keep data lean and prevent serialization issues
+        const teams = await Team.find(query)
+            .populate({
+                path: "courseId",
+                select: "name", // Only pull the name
+                model: Course
+            })
+            .populate({
+                path: "ideaId",
+                select: "title description", // Only pull title and description
+                model: ProjectIdea
+            })
+            .sort({ createdAt: -1 })
+            .lean();
+            
+        // Final safety check to ensure plain JSON
+        return JSON.parse(JSON.stringify(teams));
+    } catch (error: any) {
+        console.error("Error in getTeamsForCourse:", error);
+        // Return empty array instead of crashing the whole page/action
+        return [];
+    }
 }
 
 export async function getGlobalTeamsBoard() {
